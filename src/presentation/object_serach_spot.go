@@ -18,8 +18,8 @@ type ObjectPostSearchSpotResponse struct {
 	AreaObject []common.ObjectResponse `json:"areaObject"`
 }
 
+// スポット推定を用いたオブジェクト探索
 func ObjectSearchSpotRouter(r *gin.Engine) {
-	// スポット推定を用いたオブジェクト探索
 	r.POST("api/users/:userId/objects/search/spot", func(c *gin.Context) {
 		var req ObjectPostSearchSpotRequest
 

@@ -19,8 +19,8 @@ type ObjectPostSearchAreaResponse struct {
 	Objects []common.SpotResponse `json:"objects"`
 }
 
+// エリアを用いた周辺オブジェクト探索
 func ObjectSearchAreaRouter(r *gin.Engine) {
-	// エリアを用いた周辺オブジェクト探索
 	r.POST("api/users/:userId/objects/search/area", func(c *gin.Context) {
 		var req ObjectPostSearchAreaRequest
 

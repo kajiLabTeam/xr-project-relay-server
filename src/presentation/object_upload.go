@@ -17,8 +17,8 @@ type ObjectPostUploadResponse struct {
 	Object common.ObjectResponse `json:"object"`
 }
 
+// オブジェクトのアップロード
 func ObjectUploadRouter(r *gin.Engine) {
-	// オブジェクトのアップロード
 	r.POST("api/users/:userId/objects/upload", func(c *gin.Context) {
 		var req ObjectPostUploadRequest
 
