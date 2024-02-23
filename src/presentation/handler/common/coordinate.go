@@ -1,4 +1,4 @@
-package common
+package common_handler
 
 type CoordinateRequest struct {
 	Latitude  float64 `json:"latitude"`

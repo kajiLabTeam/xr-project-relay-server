@@ -1,22 +1,22 @@
-package presentation
+package handler_presentation
 
 import (
 	"mime/multipart"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kajiLabTeam/xr-project-relay-server/presentation/common"
+	common_handler "github.com/kajiLabTeam/xr-project-relay-server/presentation/handler/common"
 )
 
 type ObjectPostSearchAreaRequest struct {
 	Id          string                    `json:"id" binding:"required,uuid"`
-	Coordinate  *common.CoordinateRequest `json:"coordinate"`
+	Coordinate  *common_handler.CoordinateRequest `json:"coordinate"`
 	RawDataFile *multipart.FileHeader     `form:"rawDataFile" binding:"required"`
 }
 
 type ObjectPostSearchAreaResponse struct {
 	Id      string                `json:"id" binding:"required,uuid"`
-	Objects []common.SpotResponse `json:"objects"`
+	Objects []common_handler.SpotResponse `json:"objects"`
 }
 
 // エリアを用いた周辺オブジェクト探索

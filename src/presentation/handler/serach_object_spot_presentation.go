@@ -1,21 +1,21 @@
-package presentation
+package handler_presentation
 
 import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kajiLabTeam/xr-project-relay-server/presentation/common"
+	common_handler "github.com/kajiLabTeam/xr-project-relay-server/presentation/handler/common"
 )
 
 type ObjectPostSearchSpotRequest struct {
-	Id         string                    `json:"id" binding:"required,uuid"`
-	Coordinate *common.CoordinateRequest `json:"coordinate"`
+	Id         string                            `json:"id" binding:"required,uuid"`
+	Coordinate *common_handler.CoordinateRequest `json:"coordinate"`
 }
 
 type ObjectPostSearchSpotResponse struct {
-	Id         string                  `json:"id" binding:"required,uuid"`
-	SpotObject common.ObjectResponse   `json:"spotObject"`
-	AreaObject []common.ObjectResponse `json:"areaObject"`
+	Id         string                          `json:"id" binding:"required,uuid"`
+	SpotObject common_handler.ObjectResponse   `json:"spotObject"`
+	AreaObject []common_handler.ObjectResponse `json:"areaObject"`
 }
 
 // スポット推定を用いたオブジェクト探索
