@@ -13,26 +13,26 @@ type Object struct {
 	uploadUrl string
 }
 
-func NewObject(id string, user string, viewUrl string, uploadUrl string) (*Object, error) {
-	if utils.IsValidUUID(id) {
+func NewObject(id string, posterId string, viewUrl string, uploadUrl string) (*Object, error) {
+	if !utils.IsValidUUID(id) {
 		return nil, fmt.Errorf("invalid id value")
 	}
 
-	if utils.IsValidUUID(user) {
-		return nil, fmt.Errorf("invalid poster value")
+	if !utils.IsValidUUID(posterId) {
+		return nil, fmt.Errorf("invalid posterId value")
 	}
 
-	if utils.IsValidURL(viewUrl) || viewUrl != "" {
+	if !utils.IsValidURL(viewUrl) || viewUrl != "" {
 		return nil, fmt.Errorf("invalid objectViewUrl value")
 	}
 
-	if utils.IsValidURL(uploadUrl) || uploadUrl != "" {
+	if !utils.IsValidURL(uploadUrl) || uploadUrl != "" {
 		return nil, fmt.Errorf("invalid objectUploadUrl value")
 	}
 
 	return &Object{
 		id:        id,
-		posterId:  user,
+		posterId:  posterId,
 		viewUrl:   viewUrl,
 		uploadUrl: uploadUrl,
 	}, nil
