@@ -1,8 +1,8 @@
 package gateway
 
 import (
-	common_gateway "github.com/kajiLabTeam/xr-project-relay-server/infrastructure/gateway/common"
-	object_record "github.com/kajiLabTeam/xr-project-relay-server/infrastructure/record/object"
+	common_gateway "github.com/kajiLabTeam/xr-project-relay-server/src/infrastructure/gateway/common"
+	object_record "github.com/kajiLabTeam/xr-project-relay-server/src/infrastructure/record/object"
 )
 
 type ObjectGateway struct{}

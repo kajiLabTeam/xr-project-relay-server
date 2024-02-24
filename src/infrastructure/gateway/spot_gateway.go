@@ -3,8 +3,8 @@ package gateway
 import (
 	"strconv"
 
-	common_gateway "github.com/kajiLabTeam/xr-project-relay-server/infrastructure/gateway/common"
-	spot_record "github.com/kajiLabTeam/xr-project-relay-server/infrastructure/record/spot"
+	common_gateway "github.com/kajiLabTeam/xr-project-relay-server/src/infrastructure/gateway/common"
+	spot_record "github.com/kajiLabTeam/xr-project-relay-server/src/infrastructure/record/spot"
 )
 
 type SpotGateway struct{}
