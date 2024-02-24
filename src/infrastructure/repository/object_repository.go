@@ -1,34 +1,38 @@
 package repository
 
 import (
-	"github.com/kajiLabTeam/xr-project-relay-server/config/env"
-	object_model_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/model/object"
-	spot_model_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/model/spot"
-	user_model_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/model/user"
-	"github.com/kajiLabTeam/xr-project-relay-server/infrastructure/gateway"
-	object_record "github.com/kajiLabTeam/xr-project-relay-server/infrastructure/record/object"
+	"github.com/kajiLabTeam/xr-project-relay-server/src/config/env"
+	object_model_domain "github.com/kajiLabTeam/xr-project-relay-server/src/domain/model/object"
+	user_model_domain "github.com/kajiLabTeam/xr-project-relay-server/src/domain/model/user"
+	"github.com/kajiLabTeam/xr-project-relay-server/src/infrastructure/gateway"
+	object_record "github.com/kajiLabTeam/xr-project-relay-server/src/infrastructure/record/object"
 )
 
 var og = gateway.ObjectGateway{}
 
-func GetObject(functionServerEnv *env.FunctionServerEnv, o *object_model_domain.Object, s *spot_model_domain.Spot, u *user_model_domain.User) (*object_model_domain.Object, error) {
+func GetObjectBySpotIdRepository(
+	functionServerEnv *env.FunctionServerEnv,
+	spotId string,
+	u *user_model_domain.User,
+) (*object_model_domain.Object, error) {
 	objectServerUrl := functionServerEnv.GetObjectServiceUrl()
-	getObjectRequest := object_record.GetObjectRequest{
+	getObjectRequest := object_record.
+		GetObjectBySpotIdRequest{
 		UserId: u.GetId(),
-		SpotId: s.GetId(),
+		SpotId: spotId,
 	}
 
-	getObjectResponse, err := og.GetObject(objectServerUrl, &getObjectRequest)
+	getObjectBySpotIdResponse, err := og.
+		GetObjectBySpotIdGateway(
+			objectServerUrl,
+			&getObjectRequest,
+		)
 	if err != nil {
 		return nil, err
 	}
 
-	resObject, err := object_model_domain.NewObject(
-		getObjectResponse.Object.Id,
-		getObjectResponse.Object.PosterId,
-		getObjectResponse.Object.ViewUrl,
-		getObjectResponse.Object.UploadUrl,
-	)
+	resObject, err := getObjectBySpotIdResponse.ToDomainObject()
+
 	if err != nil {
 		return nil, err
 	}
@@ -37,31 +41,64 @@ func GetObject(functionServerEnv *env.FunctionServerEnv, o *object_model_domain.
 
 }
 
-func CreateObject(functionServerEnv *env.FunctionServerEnv, o *object_model_domain.Object, s *spot_model_domain.Spot, u *user_model_domain.User) (*object_model_domain.Object, error) {
+func GetObjectCollectionBySpotIdsRepository(
+	functionServerEnv *env.FunctionServerEnv,
+	spotId []string,
+	u *user_model_domain.User,
+) (object_model_domain.ObjectCollection, error) {
 	objectServerUrl := functionServerEnv.GetObjectServiceUrl()
-	createObjectRequest := object_record.CreateObjectRequest{
-		Id: u.GetId(),
-		Object: object_record.ObjectRequest{
-			Id:     o.GetId(),
-			SpotId: s.GetId(),
-		},
+	getObjectRequest := object_record.
+		GetObjectCollectionBySpotIdsRequest{
+		UserId: u.GetId(),
+		SpotId: spotId,
 	}
 
-	createObjectResponse, err := og.CreateObject(objectServerUrl, &createObjectRequest)
+	getObjectResponse, err := og.
+		GetObjectCollectionBySpotIdsGateway(
+			objectServerUrl,
+			&getObjectRequest,
+		)
 	if err != nil {
 		return nil, err
 	}
 
-	resObject, err := object_model_domain.NewObject(
-		createObjectResponse.Object.Id,
-		createObjectResponse.Object.PosterId,
-		createObjectResponse.Object.ViewUrl,
-		createObjectResponse.Object.UploadUrl,
-	)
+	resObjectCollection, err := getObjectResponse.ToDomainObjectCollection()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return resObjectCollection, nil
+
+}
+
+func CreateObjectRepository(
+	functionServerEnv *env.FunctionServerEnv,
+	userId string,
+	extension string,
+	spotId string,
+) (*object_model_domain.Object, error) {
+	objectServerUrl := functionServerEnv.GetObjectServiceUrl()
+	createObjectRequest := object_record.
+		CreateObjectRequest{
+		UserId:    userId,
+		SpotId:    spotId,
+		Extension: extension,
+	}
+
+	createObjectResponse, err := og.
+		CreateObjectGateway(
+			objectServerUrl,
+			&createObjectRequest,
+		)
+	if err != nil {
+		return nil, err
+	}
+
+	resObject, err := createObjectResponse.ToDomainObject()
 	if err != nil {
 		return nil, err
 	}
 
 	return resObject, nil
-
 }

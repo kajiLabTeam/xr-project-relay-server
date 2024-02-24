@@ -1,43 +1,37 @@
 package repository
 
 import (
-	"os"
-
-	"github.com/kajiLabTeam/xr-project-relay-server/config/env"
-	spot_model_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/model/spot"
-	"github.com/kajiLabTeam/xr-project-relay-server/infrastructure/gateway"
-	spot_record "github.com/kajiLabTeam/xr-project-relay-server/infrastructure/record/spot"
+	"github.com/kajiLabTeam/xr-project-relay-server/src/config/env"
+	spot_model_domain "github.com/kajiLabTeam/xr-project-relay-server/src/domain/model/spot"
+	input_dto_infrastructure "github.com/kajiLabTeam/xr-project-relay-server/src/infrastructure/dto/input"
+	"github.com/kajiLabTeam/xr-project-relay-server/src/infrastructure/gateway"
+	spot_record "github.com/kajiLabTeam/xr-project-relay-server/src/infrastructure/record/spot"
 )
 
 var sg = gateway.SpotGateway{}
 
-func GetSpot(functionServerEnv *env.FunctionServerEnv, spotIds *[]string, rawData *os.File) (*spot_model_domain.Spot, error) {
+func GetSpotBySpotIdsAndRawDataFileRepository(
+	functionServerEnv *env.FunctionServerEnv,
+	spotIds []string,
+	rawData []byte,
+) (*spot_model_domain.Spot, error) {
 	spotEstimationServerUrl := functionServerEnv.GetSpotEstimationServiceUrl()
-	getSpotRequest := spot_record.GetSpotRequest{
-		Ids:         *spotIds,
+	getSpotRequest := spot_record.
+		GetSpotBySpotIdsAndRawDataFileRequest{
+		SpotIds:     spotIds,
 		RawDataFile: rawData,
 	}
 
-	getSpotResponse, err := sg.GetSpot(spotEstimationServerUrl, &getSpotRequest)
+	getSpotResponse, err := sg.
+		GetSpotBySpotIdsAndRawDataFileGateway(
+			spotEstimationServerUrl,
+			&getSpotRequest,
+		)
 	if err != nil {
 		return nil, err
 	}
 
-	coordinate, err := spot_model_domain.NewCoordinate(
-		getSpotResponse.Coordinate.Latitude,
-		getSpotResponse.Coordinate.Longitude,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	resSpot, err := spot_model_domain.NewSpot(
-		getSpotResponse.Id,
-		getSpotResponse.Name,
-		getSpotResponse.LocationType,
-		getSpotResponse.Floors,
-		coordinate,
-	)
+	resSpot, err := getSpotResponse.ToDomainSpot()
 	if err != nil {
 		return nil, err
 	}
@@ -45,55 +39,63 @@ func GetSpot(functionServerEnv *env.FunctionServerEnv, spotIds *[]string, rawDat
 	return resSpot, nil
 }
 
-func GetAreaSpots(functionServerEnv *env.FunctionServerEnv, radius int, coordinate *spot_model_domain.Coordinate) (spot_model_domain.SpotCollection, error) {
+func GetSpotCollectionByCoordinateAndRadiusRepository(
+	functionServerEnv *env.FunctionServerEnv,
+	radius int,
+	latitude float64,
+	longitude float64,
+) (spot_model_domain.SpotCollection, error) {
 	spotEstimationServerUrl := functionServerEnv.GetSpotEstimationServiceUrl()
-	getAreaSpotRequest := spot_record.GetAreaSpotRequest{
-		Coordinate: spot_record.CoordinateRequest{
-			Latitude:  coordinate.GetLatitude(),
-			Longitude: coordinate.GetLongitude(),
-		},
+	getAreaSpotRequest := spot_record.
+		GetSpotCollectionByCoordinateAndRadiusRequest{
+		Latitude:  latitude,
+		Longitude: longitude,
 	}
 
-	getAreaSpotResponse, err := sg.GetAreaSpots(spotEstimationServerUrl, radius, &getAreaSpotRequest)
+	getAreaSpotResponse, err := sg.
+		GetSpotCollectionByCoordinateAndRadiusGateway(
+			spotEstimationServerUrl,
+			radius,
+			&getAreaSpotRequest,
+		)
 	if err != nil {
 		return nil, err
 	}
 
 	resSpotCollection, err := getAreaSpotResponse.ToDomainSpotCollection()
-
-	return resSpotCollection, nil
-}
-
-func CreateSpot(functionServerEnv *env.FunctionServerEnv, rawDataFile *os.File, s *spot_model_domain.Spot) (*spot_model_domain.Spot, error) {
-	spotEstimationServerUrl := functionServerEnv.GetSpotEstimationServiceUrl()
-	createSpotRequest := spot_record.CreateSpotRequest{
-		Name:         s.GetName(),
-		Floors:       s.GetFloors(),
-		LocationType: s.GetLocationType(),
-		Coordinate: spot_record.CoordinateRequest{
-			Latitude:  s.GetCoordinate().GetLatitude(),
-			Longitude: s.GetCoordinate().GetLongitude(),
-		},
-		RawDataFile: rawDataFile,
-	}
-
-	createSpotResponse, err := sg.CreateSpot(spotEstimationServerUrl, &createSpotRequest)
 	if err != nil {
 		return nil, err
 	}
 
-	coordinate, err := spot_model_domain.NewCoordinate(
-		createSpotResponse.Coordinate.Latitude,
-		createSpotResponse.Coordinate.Longitude,
-	)
+	return resSpotCollection, nil
+}
 
-	resSpot, err := spot_model_domain.NewSpot(
-		createSpotResponse.Id,
-		createSpotResponse.Name,
-		createSpotResponse.LocationType,
-		createSpotResponse.Floors,
-		coordinate,
-	)
+func CreateSpotRepository(
+	csidto *input_dto_infrastructure.CreateSpotRepositoryInputDTO,
+) (*spot_model_domain.Spot, error) {
+	spotEstimationServerUrl := csidto.FunctionServerEnv.GetSpotEstimationServiceUrl()
+	createSpotRequest := spot_record.CreateSpotRequest{
+		Name:         csidto.Name,
+		Floors:       csidto.Floors,
+		LocationType: csidto.LocationType,
+		Latitude:     csidto.Latitude,
+		Longitude:    csidto.Longitude,
+		RawDataFile:  csidto.RawDataFile,
+	}
+
+	createSpotResponse, err := sg.
+		CreateSpotGateway(
+			spotEstimationServerUrl,
+			&createSpotRequest,
+		)
+	if err != nil {
+		return nil, err
+	}
+
+	resSpot, err := createSpotResponse.ToDomainSpot()
+	if err != nil {
+		return nil, err
+	}
 
 	return resSpot, nil
 }

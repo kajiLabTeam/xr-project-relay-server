@@ -1,8 +1,25 @@
 package object_model_domain
 
-import "github.com/kajiLabTeam/xr-project-relay-server/config/env"
+import (
+	"github.com/kajiLabTeam/xr-project-relay-server/src/config/env"
+	user_model_domain "github.com/kajiLabTeam/xr-project-relay-server/src/domain/model/user"
+)
 
 type ObjectRepository interface {
-	CreateObject(functionServerEnv *env.FunctionServerEnv, o *Object) (*Object, error)
-	GetObjectsBySpotId(functionServerEnv *env.FunctionServerEnv, coordinate *Object) ([]*Object, error)
+	GetObjectBySpotIdRepository(
+		functionServerEnv *env.FunctionServerEnv,
+		spotId string,
+		u *user_model_domain.User,
+	) (*Object, error)
+	GetObjectCollectionBySpotIdsRepository(
+		functionServerEnv *env.FunctionServerEnv,
+		spotId []string,
+		u *user_model_domain.User,
+	) (ObjectCollection, error)
+	CreateObjectRepository(
+		functionServerEnv *env.FunctionServerEnv,
+		userId string,
+		extension string,
+		spotId string,
+	) (*Object, error)
 }

@@ -2,15 +2,15 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kajiLabTeam/xr-project-relay-server/presentation"
+	"github.com/kajiLabTeam/xr-project-relay-server/src/presentation/handler"
 )
 
 func main() {
 	r := gin.Default()
 
-	presentation.ObjectUploadRouter(r)
-	presentation.ObjectSearchSpotRouter(r)
-	presentation.ObjectSearchAreaRouter(r)
+	handler.GetObjectBySpotRouter(r)
+	handler.GetObjectByAreaRouter(r)
+	handler.CreateObjectHandler(r)
 
 	r.Run()
 }

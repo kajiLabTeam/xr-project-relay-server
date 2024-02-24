@@ -12,7 +12,7 @@ type Spot struct {
 	locationType string
 	floors       int
 	Coordinate   Coordinate
-	// RawDataFile  *os.File
+	// RawDataFile  []byte
 }
 
 func NewSpot(id string, name string, locationType string, floors int, coordinate *Coordinate) (*Spot, error) {
@@ -70,14 +70,6 @@ func (s *Spot) GetCoordinate() *Coordinate {
 	return &s.Coordinate
 }
 
-// func (s *Spot) GetRawDataFile() *os.File {
+// func (s *Spot) GetRawDataFile() []byte {
 // 	return s.RawDataFile
 // }
-
-func (s *Spot) ExtractIds(spots []Spot) []string {
-	var ids []string
-	for _, spot := range spots {
-		ids = append(ids, spot.id)
-	}
-	return ids
-}
