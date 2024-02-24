@@ -11,29 +11,25 @@ import (
 
 var og = gateway.ObjectGateway{}
 
-func GetObject(functionServerEnv *env.FunctionServerEnv, o *object_model_domain.Object, s *spot_model_domain.Spot, u *user_model_domain.User) (*object_model_domain.Object, error) {
+func GetObjectsBySpotIds(functionServerEnv *env.FunctionServerEnv, u *user_model_domain.User, spotId []string) (*object_model_domain.ObjectCollection, error) {
 	objectServerUrl := functionServerEnv.GetObjectServiceUrl()
-	getObjectRequest := object_record.GetObjectRequest{
+	getObjectRequest := object_record.GetObjectsBySpotIdsRequest{
 		UserId: u.GetId(),
-		SpotId: s.GetId(),
+		SpotId: spotId,
 	}
 
-	getObjectResponse, err := og.GetObject(objectServerUrl, &getObjectRequest)
+	getObjectResponse, err := og.GetObjectsBySpotIdsGateway(objectServerUrl, &getObjectRequest)
 	if err != nil {
 		return nil, err
 	}
 
-	resObject, err := object_model_domain.NewObject(
-		getObjectResponse.Object.Id,
-		getObjectResponse.Object.PosterId,
-		getObjectResponse.Object.ViewUrl,
-		getObjectResponse.Object.UploadUrl,
-	)
+	resObjectCollection, err := getObjectResponse.ToDomainObjectCollection()
+
 	if err != nil {
 		return nil, err
 	}
 
-	return resObject, nil
+	return &resObjectCollection, nil
 
 }
 
@@ -47,21 +43,15 @@ func CreateObject(functionServerEnv *env.FunctionServerEnv, o *object_model_doma
 		},
 	}
 
-	createObjectResponse, err := og.CreateObject(objectServerUrl, &createObjectRequest)
+	createObjectResponse, err := og.CreateObjectGateway(objectServerUrl, &createObjectRequest)
 	if err != nil {
 		return nil, err
 	}
 
-	resObject, err := object_model_domain.NewObject(
-		createObjectResponse.Object.Id,
-		createObjectResponse.Object.PosterId,
-		createObjectResponse.Object.ViewUrl,
-		createObjectResponse.Object.UploadUrl,
-	)
+	resObject, err := createObjectResponse.ToDomainObject()
 	if err != nil {
 		return nil, err
 	}
 
 	return resObject, nil
-
 }

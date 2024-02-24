@@ -11,33 +11,19 @@ import (
 
 var sg = gateway.SpotGateway{}
 
-func GetSpot(functionServerEnv *env.FunctionServerEnv, spotIds *[]string, rawData *os.File) (*spot_model_domain.Spot, error) {
+func GetSpotBySpotIdsAndRawDataFile(functionServerEnv *env.FunctionServerEnv, spotIds *[]string, rawData *os.File) (*spot_model_domain.Spot, error) {
 	spotEstimationServerUrl := functionServerEnv.GetSpotEstimationServiceUrl()
 	getSpotRequest := spot_record.GetSpotRequest{
 		Ids:         *spotIds,
 		RawDataFile: rawData,
 	}
 
-	getSpotResponse, err := sg.GetSpot(spotEstimationServerUrl, &getSpotRequest)
+	getSpotResponse, err := sg.GetSpotGateway(spotEstimationServerUrl, &getSpotRequest)
 	if err != nil {
 		return nil, err
 	}
 
-	coordinate, err := spot_model_domain.NewCoordinate(
-		getSpotResponse.Coordinate.Latitude,
-		getSpotResponse.Coordinate.Longitude,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	resSpot, err := spot_model_domain.NewSpot(
-		getSpotResponse.Id,
-		getSpotResponse.Name,
-		getSpotResponse.LocationType,
-		getSpotResponse.Floors,
-		coordinate,
-	)
+	resSpot, err := getSpotResponse.ToDomainSpot()
 	if err != nil {
 		return nil, err
 	}
@@ -45,21 +31,22 @@ func GetSpot(functionServerEnv *env.FunctionServerEnv, spotIds *[]string, rawDat
 	return resSpot, nil
 }
 
-func GetAreaSpots(functionServerEnv *env.FunctionServerEnv, radius int, coordinate *spot_model_domain.Coordinate) (spot_model_domain.SpotCollection, error) {
+func GetSpotCollectionByCoordinateAndRadius(functionServerEnv *env.FunctionServerEnv, radius int, coordinate *spot_model_domain.Coordinate) (spot_model_domain.SpotCollection, error) {
 	spotEstimationServerUrl := functionServerEnv.GetSpotEstimationServiceUrl()
 	getAreaSpotRequest := spot_record.GetAreaSpotRequest{
-		Coordinate: spot_record.CoordinateRequest{
-			Latitude:  coordinate.GetLatitude(),
-			Longitude: coordinate.GetLongitude(),
-		},
+		Latitude:  coordinate.GetLatitude(),
+		Longitude: coordinate.GetLongitude(),
 	}
 
-	getAreaSpotResponse, err := sg.GetAreaSpots(spotEstimationServerUrl, radius, &getAreaSpotRequest)
+	getAreaSpotResponse, err := sg.GetAreaSpotsGateway(spotEstimationServerUrl, radius, &getAreaSpotRequest)
 	if err != nil {
 		return nil, err
 	}
 
 	resSpotCollection, err := getAreaSpotResponse.ToDomainSpotCollection()
+	if err != nil {
+		return nil, err
+	}
 
 	return resSpotCollection, nil
 }
@@ -70,30 +57,20 @@ func CreateSpot(functionServerEnv *env.FunctionServerEnv, rawDataFile *os.File, 
 		Name:         s.GetName(),
 		Floors:       s.GetFloors(),
 		LocationType: s.GetLocationType(),
-		Coordinate: spot_record.CoordinateRequest{
-			Latitude:  s.GetCoordinate().GetLatitude(),
-			Longitude: s.GetCoordinate().GetLongitude(),
-		},
-		RawDataFile: rawDataFile,
+		Latitude:     s.GetCoordinate().GetLatitude(),
+		Longitude:    s.GetCoordinate().GetLongitude(),
+		RawDataFile:  rawDataFile,
 	}
 
-	createSpotResponse, err := sg.CreateSpot(spotEstimationServerUrl, &createSpotRequest)
+	createSpotResponse, err := sg.CreateSpotGateway(spotEstimationServerUrl, &createSpotRequest)
 	if err != nil {
 		return nil, err
 	}
 
-	coordinate, err := spot_model_domain.NewCoordinate(
-		createSpotResponse.Coordinate.Latitude,
-		createSpotResponse.Coordinate.Longitude,
-	)
-
-	resSpot, err := spot_model_domain.NewSpot(
-		createSpotResponse.Id,
-		createSpotResponse.Name,
-		createSpotResponse.LocationType,
-		createSpotResponse.Floors,
-		coordinate,
-	)
+	resSpot, err := createSpotResponse.ToDomainSpot()
+	if err != nil {
+		return nil, err
+	}
 
 	return resSpot, nil
 }

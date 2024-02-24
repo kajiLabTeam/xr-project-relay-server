@@ -7,10 +7,10 @@ import (
 
 type ObjectGateway struct{}
 
-func (og ObjectGateway) GetObject(objectServerUrl string, getObjectRequest *object_record.GetObjectRequest) (*object_record.GetObjectResponse, error) {
+func (og ObjectGateway) GetObjectsBySpotIdsGateway(objectServerUrl string, getObjectRequest *object_record.GetObjectsBySpotIdsRequest) (*object_record.GetObjectsBySpotIdsResponse, error) {
 	apiEndpoint := objectServerUrl + "/api/object/get"
 
-	getObjectResponse, err := common_gateway.PostFetcher[*object_record.GetObjectRequest, object_record.GetObjectResponse](getObjectRequest, apiEndpoint)
+	getObjectResponse, err := common_gateway.PostFetcher[*object_record.GetObjectsBySpotIdsRequest, object_record.GetObjectsBySpotIdsResponse](getObjectRequest, apiEndpoint)
 	if err != nil {
 		return nil, err
 	}
@@ -18,7 +18,7 @@ func (og ObjectGateway) GetObject(objectServerUrl string, getObjectRequest *obje
 	return getObjectResponse, nil
 }
 
-func (og ObjectGateway) CreateObject(objectServerUrl string, createObjectRequest *object_record.CreateObjectRequest) (*object_record.CreateObjectResponse, error) {
+func (og ObjectGateway) CreateObjectGateway(objectServerUrl string, createObjectRequest *object_record.CreateObjectRequest) (*object_record.CreateObjectResponse, error) {
 	apiEndpoint := objectServerUrl + "/api/object/upload"
 
 	createObjectResponse, err := common_gateway.PostFetcher[*object_record.CreateObjectRequest, object_record.CreateObjectResponse](createObjectRequest, apiEndpoint)

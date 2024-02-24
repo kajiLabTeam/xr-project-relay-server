@@ -9,7 +9,7 @@ import (
 
 type SpotGateway struct{}
 
-func (sg *SpotGateway) GetSpot(spotEstimationServerUrl string, getSpotRequest *spot_record.GetSpotRequest) (*spot_record.GetSpotResponse, error) {
+func (sg *SpotGateway) GetSpotGateway(spotEstimationServerUrl string, getSpotRequest *spot_record.GetSpotRequest) (*spot_record.GetSpotResponse, error) {
 	apiEndpoint := spotEstimationServerUrl + "/api/spot/get"
 
 	responseBody, err := common_gateway.PostFetcher[*spot_record.GetSpotRequest, spot_record.GetSpotResponse](getSpotRequest, apiEndpoint)
@@ -20,7 +20,7 @@ func (sg *SpotGateway) GetSpot(spotEstimationServerUrl string, getSpotRequest *s
 	return responseBody, nil
 }
 
-func (sg *SpotGateway) GetAreaSpots(areaEstimationServerUrl string, radius int, getAreaSpotRequest *spot_record.GetAreaSpotRequest) (*spot_record.GetAreaSpotResponse, error) {
+func (sg *SpotGateway) GetAreaSpotsGateway(areaEstimationServerUrl string, radius int, getAreaSpotRequest *spot_record.GetAreaSpotRequest) (*spot_record.GetAreaSpotResponse, error) {
 	apiEndpoint := areaEstimationServerUrl + "/api/area/search?range=" + strconv.Itoa(radius)
 
 	responseBody, err := common_gateway.PostFetcher[*spot_record.GetAreaSpotRequest, spot_record.GetAreaSpotResponse](getAreaSpotRequest, apiEndpoint)
@@ -32,7 +32,7 @@ func (sg *SpotGateway) GetAreaSpots(areaEstimationServerUrl string, radius int, 
 }
 
 // TODO: Multiple file upload
-func (sg *SpotGateway) CreateSpot(spotEstimationServerUrl string, createSpotRequest *spot_record.CreateSpotRequest) (*spot_record.CreateSpotResponse, error) {
+func (sg *SpotGateway) CreateSpotGateway(spotEstimationServerUrl string, createSpotRequest *spot_record.CreateSpotRequest) (*spot_record.CreateSpotResponse, error) {
 	apiEndpoint := spotEstimationServerUrl + "/api/spot/create"
 
 	responseBody, err := common_gateway.PostFetcher[*spot_record.CreateSpotRequest, spot_record.CreateSpotResponse](createSpotRequest, apiEndpoint)
