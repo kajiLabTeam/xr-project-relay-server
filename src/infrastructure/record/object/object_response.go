@@ -1,6 +1,6 @@
 package object_record
 
-import object_model_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/model/object"
+import object_model_domain "github.com/kajiLabTeam/xr-project-relay-server/src/domain/model/object"
 
 type ObjectResponse struct {
 	Id        string `json:"id"  binding:"required,uuid"`

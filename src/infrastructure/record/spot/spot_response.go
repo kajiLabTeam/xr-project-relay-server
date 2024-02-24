@@ -1,6 +1,6 @@
 package spot_record
 
-import spot_model_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/model/spot"
+import spot_model_domain "github.com/kajiLabTeam/xr-project-relay-server/src/domain/model/spot"
 
 type SpotResponse struct {
 	Id           string  `json:"id"  binding:"required,uuid"`
