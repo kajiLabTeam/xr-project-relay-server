@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"os"
-
 	"github.com/kajiLabTeam/xr-project-relay-server/config/env"
 	spot_model_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/model/spot"
 	"github.com/kajiLabTeam/xr-project-relay-server/infrastructure/gateway"
@@ -11,7 +9,7 @@ import (
 
 var sg = gateway.SpotGateway{}
 
-func GetSpotBySpotIdsAndRawDataFile(functionServerEnv *env.FunctionServerEnv, spotIds []string, rawData *os.File) (*spot_model_domain.Spot, error) {
+func GetSpotBySpotIdsAndRawDataFile(functionServerEnv *env.FunctionServerEnv, spotIds []string, rawData []byte) (*spot_model_domain.Spot, error) {
 	spotEstimationServerUrl := functionServerEnv.GetSpotEstimationServiceUrl()
 	getSpotRequest := spot_record.GetSpotBySpotIdsAndRawDataFileRequest{
 		SpotIds:     spotIds,
@@ -51,7 +49,7 @@ func GetSpotCollectionByCoordinateAndRadius(functionServerEnv *env.FunctionServe
 	return resSpotCollection, nil
 }
 
-func CreateSpot(functionServerEnv *env.FunctionServerEnv, rawDataFile *os.File, s *spot_model_domain.Spot) (*spot_model_domain.Spot, error) {
+func CreateSpot(functionServerEnv *env.FunctionServerEnv, rawDataFile []byte, s *spot_model_domain.Spot) (*spot_model_domain.Spot, error) {
 	spotEstimationServerUrl := functionServerEnv.GetSpotEstimationServiceUrl()
 	createSpotRequest := spot_record.CreateSpotRequest{
 		Name:         s.GetName(),
