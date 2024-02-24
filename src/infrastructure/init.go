@@ -1,6 +1,6 @@
 package infrastructure
 
-import "github.com/kajiLabTeam/xr-project-relay-server/config/env"
+import "github.com/kajiLabTeam/xr-project-relay-server/src/config/env"
 
 func Init() *env.FunctionServerEnv {
 	fse, err := env.SetObjectServiceUrl()
