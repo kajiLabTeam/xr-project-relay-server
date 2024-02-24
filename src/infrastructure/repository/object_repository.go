@@ -1,24 +1,32 @@
 package repository
 
 import (
-	"github.com/kajiLabTeam/xr-project-relay-server/config/env"
-	object_model_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/model/object"
-	spot_model_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/model/spot"
-	user_model_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/model/user"
-	"github.com/kajiLabTeam/xr-project-relay-server/infrastructure/gateway"
-	object_record "github.com/kajiLabTeam/xr-project-relay-server/infrastructure/record/object"
+	"github.com/kajiLabTeam/xr-project-relay-server/src/config/env"
+	object_model_domain "github.com/kajiLabTeam/xr-project-relay-server/src/domain/model/object"
+	user_model_domain "github.com/kajiLabTeam/xr-project-relay-server/src/domain/model/user"
+	"github.com/kajiLabTeam/xr-project-relay-server/src/infrastructure/gateway"
+	object_record "github.com/kajiLabTeam/xr-project-relay-server/src/infrastructure/record/object"
 )
 
 var og = gateway.ObjectGateway{}
 
-func GetObjectBySpotId(functionServerEnv *env.FunctionServerEnv, u *user_model_domain.User, spotId string) (*object_model_domain.Object, error) {
+func GetObjectBySpotIdRepository(
+	functionServerEnv *env.FunctionServerEnv,
+	spotId string,
+	u *user_model_domain.User,
+) (*object_model_domain.Object, error) {
 	objectServerUrl := functionServerEnv.GetObjectServiceUrl()
-	getObjectRequest := object_record.GetObjectBySpotIdRequest{
+	getObjectRequest := object_record.
+		GetObjectBySpotIdRequest{
 		UserId: u.GetId(),
 		SpotId: spotId,
 	}
 
-	getObjectBySpotIdResponse, err := og.GetObjectBySpotIdGateway(objectServerUrl, &getObjectRequest)
+	getObjectBySpotIdResponse, err := og.
+		GetObjectBySpotIdGateway(
+			objectServerUrl,
+			&getObjectRequest,
+		)
 	if err != nil {
 		return nil, err
 	}
@@ -33,14 +41,23 @@ func GetObjectBySpotId(functionServerEnv *env.FunctionServerEnv, u *user_model_d
 
 }
 
-func GetObjectCollectionBySpotIds(functionServerEnv *env.FunctionServerEnv, u *user_model_domain.User, spotId []string) (*object_model_domain.ObjectCollection, error) {
+func GetObjectCollectionBySpotIdsRepository(
+	functionServerEnv *env.FunctionServerEnv,
+	spotId []string,
+	u *user_model_domain.User,
+) (object_model_domain.ObjectCollection, error) {
 	objectServerUrl := functionServerEnv.GetObjectServiceUrl()
-	getObjectRequest := object_record.GetObjectCollectionBySpotIdsRequest{
+	getObjectRequest := object_record.
+		GetObjectCollectionBySpotIdsRequest{
 		UserId: u.GetId(),
 		SpotId: spotId,
 	}
 
-	getObjectResponse, err := og.GetObjectCollectionBySpotIdsGateway(objectServerUrl, &getObjectRequest)
+	getObjectResponse, err := og.
+		GetObjectCollectionBySpotIdsGateway(
+			objectServerUrl,
+			&getObjectRequest,
+		)
 	if err != nil {
 		return nil, err
 	}
@@ -51,19 +68,29 @@ func GetObjectCollectionBySpotIds(functionServerEnv *env.FunctionServerEnv, u *u
 		return nil, err
 	}
 
-	return &resObjectCollection, nil
+	return resObjectCollection, nil
 
 }
 
-func CreateObject(functionServerEnv *env.FunctionServerEnv, extension string, o *object_model_domain.Object, s *spot_model_domain.Spot, u *user_model_domain.User) (*object_model_domain.Object, error) {
+func CreateObjectRepository(
+	functionServerEnv *env.FunctionServerEnv,
+	userId string,
+	extension string,
+	spotId string,
+) (*object_model_domain.Object, error) {
 	objectServerUrl := functionServerEnv.GetObjectServiceUrl()
-	createObjectRequest := object_record.CreateObjectRequest{
-		UserId:    u.GetId(),
-		SpotId:    s.GetId(),
+	createObjectRequest := object_record.
+		CreateObjectRequest{
+		UserId:    userId,
+		SpotId:    spotId,
 		Extension: extension,
 	}
 
-	createObjectResponse, err := og.CreateObjectGateway(objectServerUrl, &createObjectRequest)
+	createObjectResponse, err := og.
+		CreateObjectGateway(
+			objectServerUrl,
+			&createObjectRequest,
+		)
 	if err != nil {
 		return nil, err
 	}
