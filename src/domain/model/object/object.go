@@ -3,7 +3,7 @@ package object_model_domain
 import (
 	"fmt"
 
-	"github.com/kajiLabTeam/xr-project-relay-server/utils"
+	"github.com/kajiLabTeam/xr-project-relay-server/src/utils"
 )
 
 type Object struct {
@@ -42,7 +42,7 @@ func (o *Object) GetId() string {
 	return o.id
 }
 
-func (o *Object) GetPoster() string {
+func (o *Object) GetPosterId() string {
 	return o.posterId
 }
 
