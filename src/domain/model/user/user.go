@@ -3,7 +3,7 @@ package user_model_domain
 import (
 	"fmt"
 
-	"github.com/kajiLabTeam/xr-project-relay-server/utils"
+	"github.com/kajiLabTeam/xr-project-relay-server/src/utils"
 )
 
 type User struct {
