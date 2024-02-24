@@ -4,6 +4,16 @@ import (
 	"os"
 )
 
+type GetSpotBySpotIdsAndRawDataFileRequest struct {
+	SpotIds     []string `json:"spotIds"  binding:"required"`
+	RawDataFile *os.File `json:"rawDataFile"  binding:"required"`
+}
+
+type GetSpotCollectionByCoordinateAndRadiusRequest struct {
+	Latitude  float64 `json:"latitude"  binding:"required"`
+	Longitude float64 `json:"longitude"  binding:"required"`
+}
+
 type CreateSpotRequest struct {
 	Name         string   `json:"name"  binding:"required"`
 	Floors       int      `json:"floors"  binding:"required"`
@@ -11,14 +21,4 @@ type CreateSpotRequest struct {
 	Latitude     float64  `json:"latitude"  binding:"required"`
 	Longitude    float64  `json:"longitude"  binding:"required"`
 	RawDataFile  *os.File `json:"rawDataFile"  binding:"required"`
-}
-
-type GetSpotRequest struct {
-	Ids         []string `json:"ids"  binding:"required"`
-	RawDataFile *os.File `json:"rawDataFile"  binding:"required"`
-}
-
-type GetAreaSpotRequest struct {
-	Latitude  float64 `json:"latitude"  binding:"required"`
-	Longitude float64 `json:"longitude"  binding:"required"`
 }

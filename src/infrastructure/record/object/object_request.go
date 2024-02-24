@@ -1,16 +1,17 @@
 package object_record
 
-type CreateObjectRequest struct {
-	Id     string        `json:"id"  binding:"required,uuid"`
-	Object ObjectRequest `json:"object"  binding:"required"`
+type GetObjectBySpotIdRequest struct {
+	UserId string `json:"userId"  binding:"required,uuid"`
+	SpotId string `json:"spotId"  binding:"required,uuid"`
 }
 
-type GetObjectsBySpotIdsRequest struct {
+type GetObjectCollectionBySpotIdsRequest struct {
 	UserId string   `json:"userId"  binding:"required,uuid"`
 	SpotId []string `json:"spotId"  binding:"required,uuid"`
 }
 
-type ObjectRequest struct {
-	Id     string `json:"id"  binding:"required,uuid"`
-	SpotId string `json:"spotId"  binding:"required,uuid"`
+type CreateObjectRequest struct {
+	UserId    string `json:"userId"  binding:"required,uuid"`
+	SpotId    string `json:"spotId"  binding:"required,uuid"`
+	Extension string `json:"extension"  binding:"required"`
 }

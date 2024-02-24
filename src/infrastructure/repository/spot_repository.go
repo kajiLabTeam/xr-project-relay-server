@@ -11,14 +11,14 @@ import (
 
 var sg = gateway.SpotGateway{}
 
-func GetSpotBySpotIdsAndRawDataFile(functionServerEnv *env.FunctionServerEnv, spotIds *[]string, rawData *os.File) (*spot_model_domain.Spot, error) {
+func GetSpotBySpotIdsAndRawDataFile(functionServerEnv *env.FunctionServerEnv, spotIds []string, rawData *os.File) (*spot_model_domain.Spot, error) {
 	spotEstimationServerUrl := functionServerEnv.GetSpotEstimationServiceUrl()
-	getSpotRequest := spot_record.GetSpotRequest{
-		Ids:         *spotIds,
+	getSpotRequest := spot_record.GetSpotBySpotIdsAndRawDataFileRequest{
+		SpotIds:     spotIds,
 		RawDataFile: rawData,
 	}
 
-	getSpotResponse, err := sg.GetSpotGateway(spotEstimationServerUrl, &getSpotRequest)
+	getSpotResponse, err := sg.GetSpotBySpotIdsAndRawDataFileGateway(spotEstimationServerUrl, &getSpotRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -33,12 +33,12 @@ func GetSpotBySpotIdsAndRawDataFile(functionServerEnv *env.FunctionServerEnv, sp
 
 func GetSpotCollectionByCoordinateAndRadius(functionServerEnv *env.FunctionServerEnv, radius int, coordinate *spot_model_domain.Coordinate) (spot_model_domain.SpotCollection, error) {
 	spotEstimationServerUrl := functionServerEnv.GetSpotEstimationServiceUrl()
-	getAreaSpotRequest := spot_record.GetAreaSpotRequest{
+	getAreaSpotRequest := spot_record.GetSpotCollectionByCoordinateAndRadiusRequest{
 		Latitude:  coordinate.GetLatitude(),
 		Longitude: coordinate.GetLongitude(),
 	}
 
-	getAreaSpotResponse, err := sg.GetAreaSpotsGateway(spotEstimationServerUrl, radius, &getAreaSpotRequest)
+	getAreaSpotResponse, err := sg.GetSpotCollectionByCoordinateAndRadiusGateway(spotEstimationServerUrl, radius, &getAreaSpotRequest)
 	if err != nil {
 		return nil, err
 	}
