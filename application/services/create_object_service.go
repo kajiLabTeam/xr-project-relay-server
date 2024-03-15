@@ -23,14 +23,14 @@ func NewCreateObjectService(
 	}
 }
 
-func (createObjectService *CreateObjectService) Run(
+func (cos *CreateObjectService) Run(
 	user *user_models_domain.User,
 	spot *spot_models_domain.Spot,
 	object *object_models_domain.Object,
 	application *application_models_domain.Application,
 ) (*object_models_domain.Object, error) {
 	// スポットをDBに登録
-	spot, err := createObjectService.spotRepo.Save(spot, application)
+	spot, err := cos.spotRepo.Save(spot, application)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func (createObjectService *CreateObjectService) Run(
 	spotId := spot.GetId()
 
 	// オブジェクトをDBに登録
-	object, err = createObjectService.objectRepo.Save(
+	object, err = cos.objectRepo.Save(
 		spotId,
 		user,
 		object,

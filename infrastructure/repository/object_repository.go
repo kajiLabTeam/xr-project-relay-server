@@ -20,30 +20,30 @@ func NewObjectRepository() repository_impl.ObjectRepositoryImpl {
 
 func (or *ObjectRepository) FindForSpotId(
 	spotId string,
-	user *user_models_domain.User,
-	application *application_models_domain.Application,
+	u *user_models_domain.User,
+	a *application_models_domain.Application,
 ) (*object_models_domain.Object, error) {
 	FindForSpotIdRequest := object_record.FindForSpotIdRequest{
-		UserId: user.GetId(),
+		UserId: u.GetId(),
 		SpotId: spotId,
 	}
 
 	// ゲートウェイを介してスポットを取得
-	getObjectBySpotIdResponse, err := og.FindForSpotId(
+	getObjectBySpotIdRes, err := og.FindForSpotId(
 		&FindForSpotIdRequest,
-		application,
+		a,
 	)
 	if err != nil {
 		return nil, err
 	}
 
 	resObject, err := object_models_domain.NewObject(
-		&getObjectBySpotIdResponse.Id,
-		&getObjectBySpotIdResponse.PosterId,
-		getObjectBySpotIdResponse.Extension,
-		&getObjectBySpotIdResponse.SpotId,
+		&getObjectBySpotIdRes.Id,
+		&getObjectBySpotIdRes.PosterId,
+		getObjectBySpotIdRes.Extension,
+		&getObjectBySpotIdRes.SpotId,
 		nil,
-		&getObjectBySpotIdResponse.ViewUrl,
+		&getObjectBySpotIdRes.ViewUrl,
 	)
 	if err != nil {
 		return nil, err
@@ -55,29 +55,29 @@ func (or *ObjectRepository) FindForSpotId(
 
 func (or *ObjectRepository) FindForSpotIds(
 	spotIds []string,
-	user *user_models_domain.User,
-	application *application_models_domain.Application,
+	u *user_models_domain.User,
+	a *application_models_domain.Application,
 ) (*object_collection_models_domain.ObjectCollection, error) {
-	findForObjectBySpotIAndRawDataFiledResponseFactory := object_record.FindForObjectBySpotIAndRawDataFiledResponseFactory{}
-	FindForSpotIdAndRawData := object_record.FindForSpotIdsRequest{
-		UserId:  user.GetId(),
+	findForObjectBySpotIAndRawDataFiledResFactory := object_record.FindForObjectBySpotIAndRawDataFiledResponseFactory{}
+	findForSpotIdAndRawDataRequest := object_record.FindForSpotIdsRequest{
+		UserId:  u.GetId(),
 		SpotIds: spotIds,
 	}
 
 	// ゲートウェイを介してスポットを取得
-	findForSpotIdAndRawDataResponse, err := og.FindForSpotIds(
-		&FindForSpotIdAndRawData,
-		application,
+	findForSpotIdAndRawDataRes, err := og.FindForSpotIds(
+		&findForSpotIdAndRawDataRequest,
+		a,
 	)
 	if err != nil {
 		return nil, err
 	}
-	if findForSpotIdAndRawDataResponse == nil {
+	if findForSpotIdAndRawDataRes == nil {
 		return nil, nil
 	}
 
-	resObjectCollection, err := findForObjectBySpotIAndRawDataFiledResponseFactory.ToDomainObject(
-		findForSpotIdAndRawDataResponse,
+	resObjectCollection, err := findForObjectBySpotIAndRawDataFiledResFactory.ToDomainObject(
+		findForSpotIdAndRawDataRes,
 	)
 	if err != nil {
 		return nil, err
@@ -89,29 +89,29 @@ func (or *ObjectRepository) FindForSpotIds(
 
 func (or *ObjectRepository) Save(
 	spotId string,
-	user *user_models_domain.User,
-	object *object_models_domain.Object,
-	application *application_models_domain.Application,
+	u *user_models_domain.User,
+	o *object_models_domain.Object,
+	a *application_models_domain.Application,
 ) (*object_models_domain.Object, error) {
 	createObjectRequest := object_record.SaveRequest{
-		UserId:    user.GetId(),
+		UserId:    u.GetId(),
 		SpotId:    spotId,
-		Extension: object.GetExtension(),
+		Extension: o.GetExtension(),
 	}
 
 	// ゲートウェイを介してスポットを保存
-	saveObjectResponse, err := og.Save(&createObjectRequest, application)
+	saveObjectRes, err := og.Save(&createObjectRequest, a)
 	if err != nil {
 		return nil, err
 	}
 
 	resObject, err := object_models_domain.NewObject(
-		&saveObjectResponse.Id,
-		&saveObjectResponse.PosterId,
-		saveObjectResponse.Extension,
-		&saveObjectResponse.SpotId,
+		&saveObjectRes.Id,
+		&saveObjectRes.PosterId,
+		saveObjectRes.Extension,
+		&saveObjectRes.SpotId,
 		nil,
-		&saveObjectResponse.UploadUrl,
+		&saveObjectRes.UploadUrl,
 	)
 	if err != nil {
 		return nil, err

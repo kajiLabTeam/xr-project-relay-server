@@ -16,7 +16,7 @@ type SpotGateway struct{}
 func (sg *SpotGateway) FindForIdsAndRawDataFile(
 	spotId []string,
 	rawDataFile []byte,
-	application *application_models_domain.Application,
+	a *application_models_domain.Application,
 ) (*spot_record.FindForIdsAndRawDataFileResponse, error) {
 	var query string
 	for _, id := range spotId {
@@ -25,7 +25,7 @@ func (sg *SpotGateway) FindForIdsAndRawDataFile(
 
 	endpoint := os.Getenv("SPOT_ESTIMATION_SERVER_URL") + "/api/spot/search" + "?" + query
 
-	request := common_gateway.NewRequest(application)
+	request := common_gateway.NewRequest(a)
 	if err := request.AddFindSpotForIdsAndRawDataFileRequest(
 		config.RAW_DATA_FILE_FIELD,
 		config.RAW_DATA_FILE_NAME,
@@ -34,19 +34,19 @@ func (sg *SpotGateway) FindForIdsAndRawDataFile(
 		return nil, err
 	}
 
-	responseBody, err := request.MakeMultipartRequest(
+	resBody, err := request.MakeMultipartRequest(
 		endpoint,
 	)
 	if err != nil {
 		return nil, err
 	}
 	// 404エラーの場合
-	if responseBody == nil {
+	if resBody == nil {
 		return nil, nil
 	}
 
 	var findForIdsAndRawDataFileResponse spot_record.FindForIdsAndRawDataFileResponse
-	err = json.Unmarshal(responseBody, &findForIdsAndRawDataFileResponse)
+	err = json.Unmarshal(resBody, &findForIdsAndRawDataFileResponse)
 	if err != nil {
 		return nil, err
 	}
@@ -56,66 +56,66 @@ func (sg *SpotGateway) FindForIdsAndRawDataFile(
 
 func (sg *SpotGateway) FindForCoordinateAndRadius(
 	radius int,
-	findForCoordinateAndRadiusRequest *spot_record.FindForCoordinateAndRadiusRequest,
-	application *application_models_domain.Application,
+	findForCoordinateAndRadiusReq *spot_record.FindForCoordinateAndRadiusRequest,
+	a *application_models_domain.Application,
 ) (*spot_record.FindForCoordinateAndRadiusResponse, error) {
 	endpoint := os.Getenv("AREA_ESTIMATION_SERVER_URL") + "/api/area/search?radius=" + strconv.Itoa(radius)
 
-	request := common_gateway.NewRequest(application)
-	responseBody, err := request.MakeApplicationJsonRequest(
+	request := common_gateway.NewRequest(a)
+	resBody, err := request.MakeApplicationJsonRequest(
 		endpoint,
-		findForCoordinateAndRadiusRequest,
+		findForCoordinateAndRadiusReq,
 	)
 	if err != nil {
 		return nil, err
 	}
 	// 404エラーの場合
-	if responseBody == nil {
+	if resBody == nil {
 		return nil, nil
 	}
 
-	var findForCoordinateAndRadiusResponse spot_record.FindForCoordinateAndRadiusResponse
-	err = json.Unmarshal(responseBody, &findForCoordinateAndRadiusResponse)
+	var findForCoordinateAndRadiusRes spot_record.FindForCoordinateAndRadiusResponse
+	err = json.Unmarshal(resBody, &findForCoordinateAndRadiusRes)
 	if err != nil {
 		return nil, err
 	}
 
-	return &findForCoordinateAndRadiusResponse, nil
+	return &findForCoordinateAndRadiusRes, nil
 }
 
 func (sg *SpotGateway) Save(
 	rawDataFile []byte,
-	saveRequest *spot_record.SaveRequest,
-	application *application_models_domain.Application,
+	saveReq *spot_record.SaveRequest,
+	a *application_models_domain.Application,
 ) (*spot_record.SaveResponse, error) {
 	endpoint := os.Getenv("SPOT_ESTIMATION_SERVER_URL") + "/api/spot/create"
 
-	request := common_gateway.NewRequest(application)
-	if err := request.AddSaveSpotRequest(
+	req := common_gateway.NewRequest(a)
+	if err := req.AddSaveSpotRequest(
 		config.RAW_DATA_FILE_FIELD,
 		config.RAW_DATA_FILE_NAME,
 		rawDataFile,
-		saveRequest,
+		saveReq,
 	); err != nil {
 		return nil, err
 	}
 
-	responseBody, err := request.MakeMultipartRequest(
+	resBody, err := req.MakeMultipartRequest(
 		endpoint,
 	)
 	if err != nil {
 		return nil, err
 	}
 	// 404エラーの場合
-	if responseBody == nil {
+	if resBody == nil {
 		return nil, nil
 	}
 
-	var saveResponse spot_record.SaveResponse
-	err = json.Unmarshal(responseBody, &saveResponse)
+	var saveRes spot_record.SaveResponse
+	err = json.Unmarshal(resBody, &saveRes)
 	if err != nil {
 		return nil, err
 	}
 
-	return &saveResponse, nil
+	return &saveRes, nil
 }

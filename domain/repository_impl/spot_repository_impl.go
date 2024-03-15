@@ -9,18 +9,18 @@ type SpotRepositoryImpl interface {
 	FindForIdsAndRawDataFile(
 		spotIds []string,
 		rawDataFile []byte,
-		application *application_models_domain.Application,
+		a *application_models_domain.Application,
 	) (*spot_models_domain.Spot, error)
 
 	FindForCoordinateAndRadius(
 		radius int,
-		latitude float64,
-		longitude float64,
-		application *application_models_domain.Application,
+		lat float64,
+		long float64,
+		a *application_models_domain.Application,
 	) (*spot_models_domain.SpotCollection, error)
 
 	Save(
 		spot *spot_models_domain.Spot,
-		application *application_models_domain.Application,
+		a *application_models_domain.Application,
 	) (*spot_models_domain.Spot, error)
 }

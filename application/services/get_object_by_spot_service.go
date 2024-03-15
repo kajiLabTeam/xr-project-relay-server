@@ -24,7 +24,7 @@ func NewGetObjectBySpotService(
 	}
 }
 
-func (gobss *GetObjectBySpotService) Run(
+func (goss *GetObjectBySpotService) Run(
 	latitude float64,
 	longitude float64,
 	rawDataFile []byte,
@@ -37,7 +37,7 @@ func (gobss *GetObjectBySpotService) Run(
 	error,
 ) {
 	// エリア探索を用いて周辺スポットを取得
-	areaSpotCollection, err := gobss.spotRepo.FindForCoordinateAndRadius(
+	areaSpotCollection, err := goss.spotRepo.FindForCoordinateAndRadius(
 		config.AREA_THRESHOLD,
 		latitude,
 		longitude,
@@ -55,7 +55,7 @@ func (gobss *GetObjectBySpotService) Run(
 	spotIds := areaSpotCollection.GetSpotIds()
 
 	// 周辺スポットを元にスポットに紐づくオブジェクトを取得
-	areaObject, err := gobss.objectRepo.FindForSpotIds(
+	areaObject, err := goss.objectRepo.FindForSpotIds(
 		spotIds,
 		user,
 		application,
@@ -71,7 +71,7 @@ func (gobss *GetObjectBySpotService) Run(
 	areaObject.LinkSpots(areaSpotCollection)
 
 	// 周辺スポットをヒントにピンポイントのスポットを取得
-	spot, err := gobss.spotRepo.FindForIdsAndRawDataFile(
+	spot, err := goss.spotRepo.FindForIdsAndRawDataFile(
 		spotIds,
 		rawDataFile,
 		application,
@@ -88,7 +88,7 @@ func (gobss *GetObjectBySpotService) Run(
 	spotId := spot.GetId()
 
 	// ピンポイントのスポットを元にスポットに紐づくオブジェクトを取得
-	spotObject, err := gobss.objectRepo.FindForSpotId(
+	spotObject, err := goss.objectRepo.FindForSpotId(
 		spotId,
 		user,
 		application,

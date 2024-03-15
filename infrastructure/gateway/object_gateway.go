@@ -12,7 +12,7 @@ import (
 type ObjectGateway struct{}
 
 func (og ObjectGateway) FindForSpotId(
-	findForSpotIdRequest *object_record.FindForSpotIdRequest,
+	findForSpotIdReq *object_record.FindForSpotIdRequest,
 	application *application_models_domain.Application,
 ) (*object_record.FindForSpotIdResponse, error) {
 	endpoint := os.Getenv("OBJECT_SERVER_URL") + "/api/object/get"
@@ -21,7 +21,7 @@ func (og ObjectGateway) FindForSpotId(
 
 	responseBody, err := request.MakeApplicationJsonRequest(
 		endpoint,
-		findForSpotIdRequest,
+		findForSpotIdReq,
 	)
 	if err != nil {
 		return nil, err
@@ -31,26 +31,26 @@ func (og ObjectGateway) FindForSpotId(
 		return nil, nil
 	}
 
-	var findForSpotIdResponse object_record.FindForSpotIdResponse
-	err = json.Unmarshal(responseBody, &findForSpotIdResponse)
+	var findForSpotIdRes object_record.FindForSpotIdResponse
+	err = json.Unmarshal(responseBody, &findForSpotIdRes)
 	if err != nil {
 		return nil, err
 	}
 
-	return &findForSpotIdResponse, nil
+	return &findForSpotIdRes, nil
 }
 
 func (og ObjectGateway) FindForSpotIds(
-	FindForSpotIdAndRawDataRequest *object_record.FindForSpotIdsRequest,
-	application *application_models_domain.Application,
+	FindForSpotIdAndRawDataReq *object_record.FindForSpotIdsRequest,
+	a *application_models_domain.Application,
 ) (*object_record.FindForObjectBySpotIAndRawDataFiledResponse, error) {
 	endpoint := os.Getenv("OBJECT_SERVER_URL") + "/api/object/collection/get"
 
-	request := common_gateway.NewRequest(application)
+	request := common_gateway.NewRequest(a)
 
 	responseBody, err := request.MakeApplicationJsonRequest(
 		endpoint,
-		FindForSpotIdAndRawDataRequest,
+		FindForSpotIdAndRawDataReq,
 	)
 	if err != nil {
 		return nil, err
@@ -60,24 +60,24 @@ func (og ObjectGateway) FindForSpotIds(
 		return nil, nil
 	}
 
-	var findForSpotIdAndRawDataResponse object_record.FindForObjectBySpotIAndRawDataFiledResponse
-	err = json.Unmarshal(responseBody, &findForSpotIdAndRawDataResponse)
+	var findForSpotIdAndRawDataRes object_record.FindForObjectBySpotIAndRawDataFiledResponse
+	err = json.Unmarshal(responseBody, &findForSpotIdAndRawDataRes)
 	if err != nil {
 		return nil, err
 	}
 
-	return &findForSpotIdAndRawDataResponse, nil
+	return &findForSpotIdAndRawDataRes, nil
 }
 
 func (og ObjectGateway) Save(
 	saveRequest *object_record.SaveRequest,
-	application *application_models_domain.Application,
+	a *application_models_domain.Application,
 ) (*object_record.SaveResponse, error) {
 	endpoint := os.Getenv("OBJECT_SERVER_URL") + "/api/object/create"
 
-	request := common_gateway.NewRequest(application)
+	request := common_gateway.NewRequest(a)
 
-	responseBody, err := request.MakeApplicationJsonRequest(
+	resBody, err := request.MakeApplicationJsonRequest(
 		endpoint,
 		saveRequest,
 	)
@@ -85,15 +85,15 @@ func (og ObjectGateway) Save(
 		return nil, err
 	}
 	// 404エラーの場合
-	if responseBody == nil {
+	if resBody == nil {
 		return nil, nil
 	}
 
-	var createObjectResponse object_record.SaveResponse
-	err = json.Unmarshal(responseBody, &createObjectResponse)
+	var createObjectRes object_record.SaveResponse
+	err = json.Unmarshal(resBody, &createObjectRes)
 	if err != nil {
 		return nil, err
 	}
 
-	return &createObjectResponse, nil
+	return &createObjectRes, nil
 }

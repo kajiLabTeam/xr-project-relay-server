@@ -19,27 +19,27 @@ func NewSpotRepository() repository_impl.SpotRepositoryImpl {
 func (sr *SpotRepository) FindForIdsAndRawDataFile(
 	spotIds []string,
 	rawDataFile []byte,
-	application *application_models_domain.Application,
+	a *application_models_domain.Application,
 ) (*spot_models_domain.Spot, error) {
-	findForIdsAndRawDataFileResponse, err := sg.FindForIdsAndRawDataFile(
+	findForIdsAndRawDataFileRes, err := sg.FindForIdsAndRawDataFile(
 		spotIds,
 		rawDataFile,
-		application,
+		a,
 	)
 	if err != nil {
 		return nil, err
 	}
-	if findForIdsAndRawDataFileResponse == nil {
+	if findForIdsAndRawDataFileRes == nil {
 		return nil, nil
 	}
 
 	resSpot, err := spot_models_domain.NewSpot(
-		&findForIdsAndRawDataFileResponse.Id,
-		findForIdsAndRawDataFileResponse.Name,
-		&findForIdsAndRawDataFileResponse.LocationType,
-		findForIdsAndRawDataFileResponse.Floor,
-		findForIdsAndRawDataFileResponse.Latitude,
-		findForIdsAndRawDataFileResponse.Longitude,
+		&findForIdsAndRawDataFileRes.Id,
+		findForIdsAndRawDataFileRes.Name,
+		&findForIdsAndRawDataFileRes.LocationType,
+		findForIdsAndRawDataFileRes.Floor,
+		findForIdsAndRawDataFileRes.Latitude,
+		findForIdsAndRawDataFileRes.Longitude,
 		nil,
 	)
 	if err != nil {
@@ -55,26 +55,26 @@ func (sr *SpotRepository) FindForCoordinateAndRadius(
 	longitude float64,
 	application *application_models_domain.Application,
 ) (*spot_models_domain.SpotCollection, error) {
-	findForObjectBySpotIAndRawDataFiledResponseFactory := spot_record.FindForCoordinateAndRadiusResponseFactory{}
-	findForCoordinateAndRadiusRequest := spot_record.FindForCoordinateAndRadiusRequest{
+	findForObjectBySpotIAndRawDataFiledResFactory := spot_record.FindForCoordinateAndRadiusResponseFactory{}
+	findForCoordinateAndRadiusReq := spot_record.FindForCoordinateAndRadiusRequest{
 		Latitude:  latitude,
 		Longitude: longitude,
 	}
 
-	findForCoordinateAndRadiusResponse, err := sg.FindForCoordinateAndRadius(
+	findForCoordinateAndRadiusRes, err := sg.FindForCoordinateAndRadius(
 		radius,
-		&findForCoordinateAndRadiusRequest,
+		&findForCoordinateAndRadiusReq,
 		application,
 	)
 	if err != nil {
 		return nil, err
 	}
-	if findForCoordinateAndRadiusResponse == nil {
+	if findForCoordinateAndRadiusRes == nil {
 		return nil, nil
 	}
 
-	resSpotCollection, err := findForObjectBySpotIAndRawDataFiledResponseFactory.ToDomainSpotCollection(
-		findForCoordinateAndRadiusResponse,
+	resSpotCollection, err := findForObjectBySpotIAndRawDataFiledResFactory.ToDomainSpotCollection(
+		findForCoordinateAndRadiusRes,
 	)
 	if err != nil {
 		return nil, err
@@ -85,7 +85,7 @@ func (sr *SpotRepository) FindForCoordinateAndRadius(
 
 func (sr *SpotRepository) Save(
 	spot *spot_models_domain.Spot,
-	application *application_models_domain.Application,
+	a *application_models_domain.Application,
 ) (*spot_models_domain.Spot, error) {
 	createSpotRequest := spot_record.SaveRequest{
 		Name:         spot.GetName(),
@@ -98,7 +98,7 @@ func (sr *SpotRepository) Save(
 	createSpotResponse, err := sg.Save(
 		spot.GetRawDataFile(),
 		&createSpotRequest,
-		application,
+		a,
 	)
 	if err != nil {
 		return nil, err

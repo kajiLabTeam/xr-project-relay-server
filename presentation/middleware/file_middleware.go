@@ -5,8 +5,8 @@ import (
 	"mime/multipart"
 )
 
-func GetBytesFromMultiPartFile(file *multipart.FileHeader) ([]byte, error) {
-	src, err := file.Open()
+func GetBytesFromMultiPartFile(f *multipart.FileHeader) ([]byte, error) {
+	src, err := f.Open()
 	if err != nil {
 		return nil, err
 	}

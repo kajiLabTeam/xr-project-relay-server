@@ -10,20 +10,20 @@ import (
 type ObjectRepositoryImpl interface {
 	FindForSpotId(
 		spotId string,
-		user *user_models_domain.User,
-		application *application_models_domain.Application,
+		u *user_models_domain.User,
+		a *application_models_domain.Application,
 	) (*object_models_domain.Object, error)
 
 	FindForSpotIds(
 		spotIds []string,
-		user *user_models_domain.User,
-		application *application_models_domain.Application,
+		u *user_models_domain.User,
+		a *application_models_domain.Application,
 	) (*object_collection_models_domain.ObjectCollection, error)
 
 	Save(
 		spotId string,
-		user *user_models_domain.User,
-		object *object_models_domain.Object,
-		application *application_models_domain.Application,
+		u *user_models_domain.User,
+		o *object_models_domain.Object,
+		a *application_models_domain.Application,
 	) (*object_models_domain.Object, error)
 }

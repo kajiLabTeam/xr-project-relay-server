@@ -22,7 +22,7 @@ func NewGetObjectByAreaService(
 	}
 }
 
-func (gobas *GetObjectByAreaService) Run(
+func (goas *GetObjectByAreaService) Run(
 	area int,
 	latitude float64,
 	longitude float64,
@@ -34,7 +34,7 @@ func (gobas *GetObjectByAreaService) Run(
 	error,
 ) {
 	// エリア探索を用いて周辺スポットを取得
-	areaSpotCollection, err := gobas.spotRepo.FindForCoordinateAndRadius(
+	areaSpotCollection, err := goas.spotRepo.FindForCoordinateAndRadius(
 		area,
 		latitude,
 		longitude,
@@ -52,7 +52,7 @@ func (gobas *GetObjectByAreaService) Run(
 	spotIds := areaSpotCollection.GetSpotIds()
 
 	// 周辺スポットを元にスポットに紐づくオブジェクトを取得
-	areaObject, err := gobas.objectRepo.FindForSpotIds(
+	areaObject, err := goas.objectRepo.FindForSpotIds(
 		spotIds,
 		user,
 		application,
