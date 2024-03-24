@@ -8,9 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware() gin.HandlerFunc {
+func AuthApplicationMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		endpoint := os.Getenv("APPLICATION_AUTHENTICATION_SERVER_URL") + "/api/application/auth"
+		endpoint := os.Getenv("AUTHENTICATION_SERVER_URL") + "/api/application/auth"
 		headerValue := c.GetHeader("Authorization")
 
 		authParts := strings.Fields(headerValue)
@@ -20,6 +20,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		request, err := http.NewRequest("GET", endpoint, nil)
 		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
 			c.Abort()
 		}
 
@@ -30,7 +31,8 @@ func AuthMiddleware() gin.HandlerFunc {
 		if err != nil {
 			c.Abort()
 		}
-		if response.StatusCode != http.StatusOK {
+		if response.StatusCode == http.StatusUnauthorized {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			c.Abort()
 		}
 
